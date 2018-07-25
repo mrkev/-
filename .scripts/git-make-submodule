@@ -1,0 +1,11 @@
+#!/bin/bash
+
+set -e
+
+cd $1
+GMS_REMOTE=`git config --get remote.origin.url`
+[ -z $GMS_REMOTE ] && exit 0 # If no remote exit
+cd ..
+rm -rf $1
+git submodule add $GMS_REMOTE
+unset GMS_REMOTE

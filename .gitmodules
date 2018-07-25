@@ -1,3 +1,21 @@
 [submodule ".tmux/plugins/tpm"]
 	path = .tmux/plugins/tpm
 	url = https://github.com/tmux-plugins/tpm
+[submodule ".tmux/plugins/tmux-battery"]
+	path = .tmux/plugins/tmux-battery
+	url = https://github.com/tmux-plugins/tmux-battery
+[submodule ".tmux/plugins/tmux-yank"]
+	path = .tmux/plugins/tmux-yank
+	url = https://git::@github.com/tmux-plugins/tmux-yank
+[submodule ".tmux/plugins/tmux-fingers"]
+	path = .tmux/plugins/tmux-fingers
+	url = https://git::@github.com/Morantron/tmux-fingers
+[submodule ".tmux/plugins/tmux-online-status"]
+	path = .tmux/plugins/tmux-online-status
+	url = https://git::@github.com/tmux-plugins/tmux-online-status
+[submodule ".tmux/plugins/tmux-prefix-highlight"]
+	path = .tmux/plugins/tmux-prefix-highlight
+	url = https://git::@github.com/tmux-plugins/tmux-prefix-highlight
+[submodule ".tmux/plugins/tmux-sidebar"]
+	path = .tmux/plugins/tmux-sidebar
+	url = https://git::@github.com/tmux-plugins/tmux-sidebar
