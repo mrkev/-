@@ -8,3 +8,4 @@
 !.gitignore_global
 !.scripts
 !.tmux.conf
+!.vimrc

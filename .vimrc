@@ -1,0 +1,299 @@
+
+set nocompatible
+filetype off
+
+"" Vundle
+" set the runtime path to include Vundle and initialize
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+Plugin 'VundleVim/Vundle.vim'
+Plugin 'christoomey/vim-tmux-navigator'
+Plugin 'vim-airline/vim-airline'
+Plugin 'vim-airline/vim-airline-themes'
+Plugin 'keith/tmux.vim' " Syntax highlighting for .tmux.conf
+Plugin 'ctrlpvim/ctrlp.vim'
+Plugin 'easymotion/vim-easymotion'
+Plugin 'airblade/vim-gitgutter'
+Plugin 'terryma/vim-multiple-cursors'
+Plugin 'isRuslan/vim-es6'
+Plugin 'vim-syntastic/syntastic'
+" Plugin 'scrooloose/nerdtree'
+Plugin 'tpope/vim-surround' " dopee
+Plugin 'leafgarland/typescript-vim' " typescript syntax
+Plugin 'quramy/tsuquyomi' " typescript extra features
+call vundle#end()
+
+"" VimPlug (for some plugins that need compiling)
+" Specify a directory for plugins (for Neovim: ~/.local/share/nvim/plugged)
+call plug#begin('~/.vim/plugged')
+" Make sure you use single quotes
+Plug 'Shougo/vimproc.vim', {'do' : 'make'}
+Plug 'nightsense/vim-crunchbang'
+" Plug 'tpope/vim-abolish'
+call plug#end()
+
+
+filetype on
+
+" http://www.johnhawthorn.com/2012/09/vi-escape-delays/
+set timeoutlen=1000 ttimeoutlen=0 " reduces the annoying timeout from pressing esc
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Plugin Config
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+""
+" let NERDTreeQuitOnOpen=1
+
+:command! Explore NERDTree
+"" Airline
+" so airline powerline symbols work
+let g:airline_powerline_fonts=1
+let g:airline_theme='base16'
+
+"" CtrlP
+let g:ctrlp_map = '<c-p>'
+let g:ctrlp_cmd = 'CtrlP'
+let g:ctrlp_working_path_mode = 'ra'
+set wildignore+=*/tmp/*,*.so,*.swp,*.zip,node_modules
+let g:ctrlp_custom_ignore = {
+  \ 'dir':  '.(git|hg|svn)$|_build$',
+  \ }
+let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files -co --exclude-standard']
+
+"" Easymotion
+" easymotion setup
+let g:Easymotion_smartcase = 1
+map / <Plug>(easymotion-sn)
+omap / <Plug>(easymotion-tn)
+" These `n` & `N` mappings are options. You do not have to map `n` & `N` to EasyMotion.
+" Without these mappings, `n` & `N` works fine. (These mappings just provide
+" different highlight method and have some other features )
+map  n <Plug>(easymotion-next)
+map  N <Plug>(easymotion-prev)
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => General
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+set history=500                    " Remember 700 lines of history
+set lazyredraw                     " redraw only when we need to (faster performance)
+set autoread                       " Autoread files when changed externally
+set encoding=utf-8                 " Set utf8 as standard encoding
+set ffs=unix,mac,dos               " Use Unix as the standard file type
+
+set backspace=eol,start,indent     " Configure backspace so it acts as it should act
+set whichwrap+=<,>,h,l             " "
+set clipboard=unnamed              " use system clipboard
+
+" inoremap jj <ESC>                  " Remap jj to escape in insert mode.
+
+" Treat long lines as break lines (useful when moving around in them)
+map j gj
+map k gk
+
+" Make it so deleting doesnt store to the buffer
+noremap <leader>d "_d
+noremap dd "_dd
+
+"Automatically cd into the directory that the file is in:
+autocmd BufEnter * execute "chdir ".escape(expand("%:p:h"), ' ')
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Misc
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Wildmenu
+set wildmenu                        " Turn on the WiLd menu
+set wildignore=*.o,*~,*.pyc         " Ignore compiled files
+set wildmode=longest:full,full      " complete to the longest common string first
+
+" Folding
+set foldenable          " enable folding
+set foldlevelstart=10   " open most folds by default
+set foldnestmax=10      " 10 nested fold max
+set foldmethod=indent   " fold based on indent level
+
+" nnoremap <space> za " space open/closes folds
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Files, backups and undo
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Turn backup off, since most stuff is in SVN, git et.c anyway...
+set nobackup
+set nowb
+set noswapfile
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" UI BRUH
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+colorscheme molokai
+"colorscheme molokai " Install at https://github.com/tomasr/molokai
+"let g:molokai_original = 1        " match the original monokai background color
+set background=dark               " Let vim know we are on a dark terminal
+
+set showmatch                     " highlight matching [{()}] when text indicator is over them
+set mat=2                         " Blink 2 tenths of a second when matching brackets
+
+"set cmdheight=1                   " Height of the command bar
+set laststatus=2                  " Always show the status line
+"set shortmess=a                   " Decrease Hit ENTER to continue message size
+
+set wrap                          " Wrap lines
+set scrolloff=5                   " minimum 5 screen lines above and below the cursor
+set number                        " Show line numbers
+set cul                           " Highlight current line
+
+set smarttab                      " Be smart when using tabs ;)
+set tabstop=2                     " 2 visual spaces per TAB
+set softtabstop=2                 " 2 spaces in tab when editing
+set shiftwidth=2                  " "
+set expandtab                     " Use spaces instead of tabs
+set ai                            " Auto indent
+set si                            " Smart indent
+
+set colorcolumn=80                " Ruler on column 80
+set lbr                           " Linebreak on 500 characters
+set tw=500                        " "
+
+"set ruler                         " Current position in lower left corner (not showing /:)
+"set showcmd                       " show last command in bottom bar (overwritten by Powerline)
+
+"nnoremap gV `[v`]                 " highlight last inserted text
+
+syntax enable                     " Enable syntax highlighting
+set grepprg=grep\ -nH\ $*         " Needed for Syntax Highlighting
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => netrw
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+let g:netrw_browse_split = 1      " Open files in new vertical split
+let g:netrw_liststyle = 3         " Show list of files as tree
+" Hit enter in the file browser to open the selected
+" file with :vsplit to the right of the browser.
+let g:netrw_browse_split = 4
+let g:netrw_winsize = 25					" Smaller: not half the screen like a split
+
+" Lifted off from http://blog.g14n.info/2013/07/my-vim-configuration.html
+" when navigating a folder, hitting <v> opens a window at right side (default
+" is left side)
+let g:netrw_altv = 1
+
+augroup ProjectDrawer
+	autocmd!
+	autocmd VimEnter * :Vexplore
+augroup END
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Hooks
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" remove trailing whitespaces
+fun! <SID>StripTrailingWhitespaces()
+  let l = line(".")
+  let c = col(".")
+  %s/\s\+$//e
+  call cursor(l, c)
+endfun
+autocmd BufWritePre * :call <SID>StripTrailingWhitespaces()
+
+""""""""""""""""""""""""""""""
+" => Visual mode
+""""""""""""""""""""""""""""""
+" Visual mode pressing * or # searches for the current selection
+" Super useful! From an idea by Michael Naumann
+vnoremap <silent> * :call VisualSelection('f')<CR>
+vnoremap <silent> # :call VisualSelection('b')<CR>
+
+function! VisualSelection(direction) range
+    let l:saved_reg = @"
+    execute "normal! vgvy"
+
+    let l:pattern = escape(@", '\\/.*$^~[]')
+    let l:pattern = substitute(l:pattern, "\n$", "", "")
+
+    if a:direction == 'b'
+        execute "normal ?" . l:pattern . "^M"
+    elseif a:direction == 'gv'
+        call CmdLine("vimgrep " . '/'. l:pattern . '/' . ' **/*.')
+    elseif a:direction == 'replace'
+        call CmdLine("%s" . '/'. l:pattern . '/')
+    elseif a:direction == 'f'
+        execute "normal /" . l:pattern . "^M"
+    endif
+
+    let @/ = l:pattern
+    let @" = l:saved_reg
+endfunction
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Explorer
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+map :mexp :e<space><C-d>
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Search
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" map <space> /                 " Map <Space> to / (search)
+" map <c-space> ?               " Map Ctrl-<Space> to ? (backwards search)
+
+set incsearch                 " Makes search act like search in modern browsers
+set hlsearch                  " Highlight search results
+set ignorecase                " Ignore case when searching
+set smartcase                 " When searching try to be smart about cases
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => GUI MODE
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Set extra options when running in GUI mode
+if has ("gui_running")
+  set guifont=Source\ Code\ Pro\ for\ Powerline
+  set guioptions-=T
+  set guioptions+=e
+  set t_Co=256
+  set guitablabel=%M\ %t
+endif
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Thanks to http://amix.dk/vim/vimrc.html and the web in general "
+" http://dougblack.io/words/a-good-vimrc.html
+
+""""" fzf
+set rtp+=/usr/local/opt/fzf
+" ## added by OPAM user-setup for vim / base ## 93ee63e278bdfc07d1139a748ed3fff2 ## you can edit, but keep this line
+let s:opam_share_dir = system("opam config var share")
+let s:opam_share_dir = substitute(s:opam_share_dir, '[\r\n]*$', '', '')
+
+let s:opam_configuration = {}
+
+function! OpamConfOcpIndent()
+  execute "set rtp^=" . s:opam_share_dir . "/ocp-indent/vim"
+endfunction
+let s:opam_configuration['ocp-indent'] = function('OpamConfOcpIndent')
+
+function! OpamConfOcpIndex()
+  execute "set rtp+=" . s:opam_share_dir . "/ocp-index/vim"
+endfunction
+let s:opam_configuration['ocp-index'] = function('OpamConfOcpIndex')
+
+function! OpamConfMerlin()
+  let l:dir = s:opam_share_dir . "/merlin/vim"
+  execute "set rtp+=" . l:dir
+endfunction
+let s:opam_configuration['merlin'] = function('OpamConfMerlin')
+
+let s:opam_packages = ["ocp-indent", "ocp-index", "merlin"]
+let s:opam_check_cmdline = ["opam list --installed --short --safe --color=never"] + s:opam_packages
+let s:opam_available_tools = split(system(join(s:opam_check_cmdline)))
+for tool in s:opam_packages
+  " Respect package order (merlin should be after ocp-index)
+  if count(s:opam_available_tools, tool) > 0
+    call s:opam_configuration[tool]()
+  endif
+endfor
+" ## end of OPAM user-setup addition for vim / base ## keep this line
+" ## added by OPAM user-setup for vim / ocp-indent ## c2e92acc119ec23ec0ef0d921f77cbd3 ## you can edit, but keep this line
+if count(s:opam_available_tools,"ocp-indent") == 0
+  source "/Users/Kevin/.opam/4.05.0/share/vim/syntax/ocp-indent.vim"
+endif
+" ## end of OPAM user-setup addition for vim / ocp-indent ## keep this line
