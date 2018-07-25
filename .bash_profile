@@ -19,7 +19,7 @@ else
   
   ## PATHS ###
 
-  # Homebrew?
+  # TODO: do I need this? Homebrew?
   export PATH="~/.bin:/usr/local/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/X11/bin:/usr/local/git/bin:/usr/X11/bin"
 
   # Texlive
@@ -42,6 +42,11 @@ else
   # RVM things
   [[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm"
   export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
+  
+  # OPAM configuration
+  . /Users/Kevin/.opam/opam-init/init.sh > /dev/null 2> /dev/null || true
+  export PATH="/usr/local/sbin:$PATH"
+  eval $(opam config env)
 
   ### History ###
 
@@ -62,7 +67,8 @@ else
 
   # Source .bashrc
   [ -f "$HOME/.bashrc" ] && . "$HOME/.bashrc"
-  
+ 
+  # TODO: I don't need this anymore
   [ -f "$HOME/.mysql_profile" ] && . "$HOME/.mysql_profile"
 
   ### Misc ###
@@ -80,9 +86,4 @@ else
   date | figlet | lolcat
 
 fi
-
-# OPAM configuration
-. /Users/Kevin/.opam/opam-init/init.sh > /dev/null 2> /dev/null || true
-export PATH="/usr/local/sbin:$PATH"
-eval $(opam config env)
 

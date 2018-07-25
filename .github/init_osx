@@ -2,16 +2,23 @@
 
 # Exit script on failure
 set -e
+
 # Install homebrew
 /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-# Install Mac App Store CLI
-brew install mas
-# Install tmux
-brew install tmux
+# Install CLI applications
+# figlet, lolcat for printing date on startup
+# gawk for tmux-fingers plugin
+# neovim, "vim" is aliased to it
+brew install tmux z youtube-dl vim figlet lolcat curl hub gawk neovim
+
+## GUI Applications
+
 # Enable homebrew cask
 brew tap caskroom/cask
 # Install all these apps
 brew cask install flux spectacle spotify spotifree sublime-text
+# Install Mac App Store CLI
+brew install mas
 # Install yregex
 mas lucky yregex
 
