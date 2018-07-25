@@ -28,8 +28,8 @@ else
   # Rust
   export PATH="/Users/Kevin/.cargo/bin:$PATH"
   
-  # ~/.bin
-  export PATH="/Users/Kevin/.bin:$PATH"
+  # ~/.scripts
+  export PATH="/Users/Kevin/.scripts:$PATH"
 
   # mysql vanilla
   PATH=${PATH}:/usr/local/mysql/bin
