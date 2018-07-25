@@ -6,12 +6,22 @@ set -e
 /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 # Install Mac App Store CLI
 brew install mas
+# Install tmux
+brew install tmux
 # Enable homebrew cask
 brew tap caskroom/cask
 # Install all these apps
 brew cask install flux spectacle spotify spotifree sublime-text
 # Install yregex
 mas lucky yregex
+
+
+# Install nvm. TODO: Can I just add a git submodule for this? It's already in my .bash_profile
+curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
+# Install node
+nvm install node
+# Use it by default instead of system node
+nvm alias default node
 
 
 # Set delay until repeat speed to system minimum
