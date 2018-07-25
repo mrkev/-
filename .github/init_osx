@@ -1,0 +1,20 @@
+#!/bin/bash
+
+# Exit script on failure
+set -e
+# Install homebrew
+/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+# Install Mac App Store CLI
+brew install mas
+# Enable homebrew cask
+brew tap caskroom/cask
+# Install all these apps
+brew cask install flux spectacle spotify spotifree sublime-text
+# Install yregex
+mas lucky yregex
+
+
+# Set delay until repeat speed to system minimum
+defaults write -g InitialKeyRepeat -int 15
+# Set key Repeat to system minimum
+defaults write -g KeyRepeat -int 2
