@@ -83,8 +83,6 @@ fi
 
 # OPAM configuration
 . /Users/Kevin/.opam/opam-init/init.sh > /dev/null 2> /dev/null || true
- export NVM_DIR="$HOME/.nvm"
-  . "/usr/local/opt/nvm/nvm.sh"
 export PATH="/usr/local/sbin:$PATH"
 eval $(opam config env)
 
