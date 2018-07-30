@@ -71,10 +71,10 @@ else
   # TODO: I don't need this anymore
   [ -f "$HOME/.mysql_profile" ] && . "$HOME/.mysql_profile"
 
-  ### Misc ###
+  # Scripts with secrets
+  [ -f "$HOME/.bash_secrets" ] && . "$HOME/.bash_secrets"
 
-  # For more github searches on Homebrew
-  export HOMEBREW_GITHUB_API_TOKEN=edc857c1e994cabab884168ed8983da5e781cbe5
+  ### Misc ###
 
   # Git autocomplete branch names
   [ -f "$HOME/.git-completion.bash" ] && . "$HOME/.git-completion.bash"
