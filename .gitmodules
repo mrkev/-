@@ -19,3 +19,6 @@
 [submodule ".tmux/plugins/tmux-sidebar"]
 	path = .tmux/plugins/tmux-sidebar
 	url = https://git::@github.com/tmux-plugins/tmux-sidebar
+[submodule ".vim/bundle/Vundle.vim"]
+	path = .vim/bundle/Vundle.vim
+	url = https://github.com/VundleVim/Vundle.vim.git
