@@ -1,0 +1,2 @@
+#!/bin/bash
+tmux -2 new-session -t default || tmux -2 new-session -s default

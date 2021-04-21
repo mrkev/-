@@ -1,0 +1,140 @@
+#!/bin/bash
+
+# The moo scripting utility.
+# By: Kevin Chavez (@aykev)
+
+# moo myScript creates or edits a script.
+
+## TODO: moo mv a b
+
+SCRIPTS_DIR=~/.scripts/
+THIS_SCRIPT="$0"
+DEFAULT_SCRIPT="#!/bin/bash\n\n"
+PROFILE_PATH=~/.bash_profile
+
+function print_usage {
+  echo ""
+  echo "Usage:"
+  echo " moo myScript           add/edit script"
+  echo " moo --delete myScript  remove script"
+  echo " moo --help"
+  echo " moo -d --dir           print scripts dir"
+  echo " moo -l --list          list scripts"
+  echo ""
+}
+
+function confirm {
+  read -p "Are you sure? [N/y]" -n 1 -r
+  echo # move to a new line
+  if [[ $REPLY =~ ^[Yy]$ ]]; then
+    return 1
+  else
+    return 0
+  fi
+}
+
+# Ensure scripts dir
+if [ ! -d "$SCRIPTS_DIR" ]; then
+  mkdir -p $SCRIPTS_DIR
+fi
+
+# Installation. If no ~/.scripts/moo,
+# assume not installed
+if [ ! -f "$SCRIPTS_DIR/moo" ]; then
+
+  # Ensure .bash_profile
+  if [ ! -f "$PROFILE_PATH" ]; then
+    touch $PROFILE_PATH
+  fi
+
+  cat $THIS_SCRIPT > "$SCRIPTS_DIR/moo"
+  chmod +x "$SCRIPTS_DIR/moo"
+
+  printf "\n# moo scripts\nexport PATH=\"~/.scripts:\$PATH\"\n" >> $PROFILE_PATH
+  echo "Installed moo."
+  exit 0;
+fi
+
+DO_DELETE=0
+# Loop through arguments and run special functions.
+for arg in "$@"
+do
+  case $arg in
+    ls|-l|-ls|--ls|--list)
+    ls -l "$SCRIPTS_DIR"
+    exit 0;
+    ;;
+    -d|--dir)
+    echo "$SCRIPTS_DIR"
+    if [ ! $# -eq 1 ]; then
+      printf "\nError: Expected no arguments with flag -d"
+      print_usage
+    fi
+    exit 0;
+    ;;
+    -h|--help)
+    print_usage
+    exit 0;
+    ;;
+    rm|-rm|-del|--del|--delete)
+    DO_DELETE=1
+    shift # Remove --delete arg
+    ;;
+  esac
+done
+
+# $ moo
+if [ $# -eq 0 ]; then
+  print_usage
+  exit 0
+fi
+
+# $ moo myScript
+if [ $# -eq 1 ]; then
+  SCRIPT="$SCRIPTS_DIR/$1"
+
+  if [ "$DO_DELETE" = 1 ]; then
+    if [ ! -f "$SCRIPT" ]; then
+      echo "No such script: $SCRIPT"
+      exit 0;
+    fi
+    # Confirm with the user
+    read -p "Can't be undone. Continue (y/N)? " CHOICE
+    case "$CHOICE" in
+      y|Y )
+        rm "$SCRIPT"
+        echo "Deleted $SCRIPT."
+      ;;
+      * )
+        echo "Selected no."
+      ;;
+    esac
+    exit 0;
+  fi
+
+  if [ ! -f "$SCRIPT" ]; then
+    printf "$DEFAULT_SCRIPT" > "$SCRIPT"
+    chmod +x "$SCRIPT"
+  fi
+
+  if [ -t 0 ]; then
+    # Interactive session. Edit in EDITOR or vi
+    "${EDITOR:-vi}" "$SCRIPT"
+    # Don't make a bunch of random scripts if we accidentally type `moo xyz`
+    if [ "$(< "$SCRIPT")\n\n" = "$DEFAULT_SCRIPT" ]; then
+      echo "Nothing? Nevermind then."
+      exit 0;
+    fi
+  else
+    # Piping from stdin. Write file directly.
+    echo "writing from stdin."
+    # append stdin to the script
+    echo $(cat -) >> "$SCRIPT"
+  fi
+
+  echo "$1 is ready to use."
+  exit 0
+fi
+
+# $ moo x y ...
+print_usage
