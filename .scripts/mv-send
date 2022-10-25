@@ -1,0 +1,7 @@
+#!/bin/bash
+set -e
+git checkout dev
+git checkout -b $1
+git commit -m "$2"
+git push --set-upstream origin $1 | tee /dev/stdout | grep "remote:.*https:" | sed 's/remote: *//'
+

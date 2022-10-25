@@ -1,0 +1,14 @@
+#!/bin/bash
+echo For folder src/engine/$1/
+echo Will call branch: eslintEngine$1
+git checkout dev
+npx eslint --config .eslintrc.js --fix src/engine/$1/
+git checkout -b eslintEngine$1
+git checkout eslintEngine$1
+git add src/engine/$1/
+git commit -m "Autofix esling warnings in src/engine/$1"
+git push --set-upstream origin eslintEngine$1
+hub pull-request --browse -m "Fix: Autofix eslint warnings in src/engine/$1/" \
+  -m "Continuing the quest first started on #1949. This PR is one of a few that replaces #1953. Tackling each sub-folder in src/engine independently.\n" \
+  -m "I'll be closing #1953, but the details for the impact of applying these autofixes to engine (ie, how many lint warnings we have after all of /engine is covered) will be there."
+

@@ -5,6 +5,13 @@
 
 # moo myScript creates or edits a script.
 
+# Usage:
+#  moo myScript           add/edit script
+#  moo --delete myScript  remove script
+#  moo --help
+#  moo -d --dir           print scripts dir
+#  moo -l --list          list scripts
+
 ## TODO: moo mv a b
 
 SCRIPTS_DIR=~/.scripts/
@@ -56,6 +63,7 @@ if [ ! -f "$SCRIPTS_DIR/moo" ]; then
 fi
 
 DO_DELETE=0
+DO_MOVE=0
 # Loop through arguments and run special functions.
 for arg in "$@"
 do
@@ -64,6 +72,7 @@ do
     ls -l "$SCRIPTS_DIR"
     exit 0;
     ;;
+
     -d|--dir)
     echo "$SCRIPTS_DIR"
     if [ ! $# -eq 1 ]; then
@@ -72,14 +81,22 @@ do
     fi
     exit 0;
     ;;
+
     -h|--help)
     print_usage
     exit 0;
     ;;
+
     rm|-rm|-del|--del|--delete)
     DO_DELETE=1
     shift # Remove --delete arg
     ;;
+
+    mv|-mv|--mv|--move)
+    DO_MOVE=1
+    shift # Remove --move arg
+    ;;
+
   esac
 done
 
@@ -111,6 +128,28 @@ if [ $# -eq 1 ]; then
     esac
     exit 0;
   fi
+
+  if [ "$DO_MOVE" = 1 ]; then
+    echo "Move: not implemented."
+    exit 0;
+  #  if [ ! -f "$SCRIPT" ]; then
+  #    echo "No such script: $SCRIPT"
+  #    exit 0;
+  #  fi
+  #  # Confirm with the user
+  #  read -p "Can't be undone. Continue (y/N)? " CHOICE
+  #  case "$CHOICE" in
+  #    y|Y )
+  #      rm "$SCRIPT"
+  #      echo "Deleted $SCRIPT."
+  #    ;;
+  #    * )
+  #      echo "Selected no."
+  #    ;;
+  #  esac
+  #  exit 0;
+  fi
+
 
   if [ ! -f "$SCRIPT" ]; then
     printf "$DEFAULT_SCRIPT" > "$SCRIPT"

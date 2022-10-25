@@ -1,0 +1,2 @@
+#!/bin/bash
+brew deps --tree --installed

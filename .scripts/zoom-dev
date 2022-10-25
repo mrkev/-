@@ -1,0 +1,37 @@
+#!/bin/bash
+
+zcfg ()
+{
+    local URL;
+    if [[ $# -lt 1 ]]; then
+        defaults read ZoomChat conf.webserver;
+    else
+        defaults write ZoomChat com.zoom.client.zclist "";
+        case $1 in
+            www)
+                URL=https://www.zoom.us
+            ;;
+            devep)
+                URL=https://devep.zoomdev.us
+            ;;
+            *)
+                URL=$1
+            ;;
+        esac;
+        defaults write ZoomChat conf.webserver $URL;
+        [ "$2" != "" ] && killall zoom.us;
+        $FUNCNAME;
+    fi
+}
+
+z ()
+{
+    [ "$1" != "" ] && zcfg $1;
+    open -n -a "zoom.us";
+    [ "$1" != "" ] && sleep 5 && zcfg www
+}
+
+
+z $1
+
+# Usage: zoom-dev devep | zoom-dev www
