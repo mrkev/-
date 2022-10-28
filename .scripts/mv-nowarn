@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# Inserts // at line 210 to comment out handleWarnings(message.data)
+sed -i '' '210i\
+//' ~/MV/Multiverse/frontend/node_modules/react-dev-utils/webpackHotDevClient.js
+
+echo "DONE"

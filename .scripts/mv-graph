@@ -1,0 +1,3 @@
+#!/bin/bash
+
+ts-node scripts/dep-graph.ts dist/stats.json > out.dot && dot -Tpdf out.dot > $1.pdf && open $1.pdf

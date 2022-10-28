@@ -1,0 +1,2 @@
+#!/bin/bash
+defaults write ZoomChat webview.context.menu true

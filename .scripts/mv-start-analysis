@@ -1,0 +1,2 @@
+#!/bin/bash
+FAST_REFRESH=false INFO_DUMP=1 yarn start

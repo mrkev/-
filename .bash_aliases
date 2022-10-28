@@ -15,9 +15,9 @@ alias gc='git commit'
 alias gp='git push'
 alias checkout='git checkout'
 alias gm='git checkout master'
-alias vim="nvim"
-alias vi="nvim"
-alias oldvim="vim"
+# alias vim="nvim"
+# alias vi="nvim"
+# alias oldvim="vim"
 alias latexclean='rm *.log *.aux *.pdf *.out'
 alias atomshell='/opt/homebrew-cask/Caskroom/atom-shell/0.21.2/Atom.app/Contents/MacOS/Atom ./'
 alias :q='exit'
@@ -87,7 +87,7 @@ case "$OSTYPE" in
     alias showfiles='defaults write com.apple.finder AppleShowAllFiles YES; killall Finder'
 
     # For looks
-    alias hidedesktop='defaults write com.apple.finder CreateDesktop false; killall Finder'
+    # alias hidedesktop='defaults write com.apple.finder CreateDesktop false; killall Finder'
     alias showdesktop='defaults write com.apple.finder CreateDesktop true; killall Finder'
 
     # For killing and recovering the dock

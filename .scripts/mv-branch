@@ -1,0 +1,113 @@
+#!/bin/bash
+
+# List of colors here: https://jonasjacek.github.io/colors/
+
+time_ago() {
+  if (( $# < 1 )); then
+    local u=$(tput smul) # underline
+    local n=$(tput rmul) # no underline
+    echo "usage: time_ago ${u}timestamp_ago${n} [${u}timestamp_now${n}]"
+    exit 1
+  fi
+  local minutes=60
+  local hours=$(( 60 * minutes ))
+  local days=$(( 24 * hours ))
+  local diff=$(( ${2:-$(date +%s)} - $1 ))
+  local human
+  if (( diff < 30 )); then
+    human="${diff} seconds"
+  elif (( diff < 90 )); then
+    human="1 minute"
+  elif (( diff < 1 * hours )); then
+    human="$(( (diff + minutes / 2) / minutes )) minutes"
+  elif (( diff < 1 * hours + 30 * minutes )); then
+    human="about 1 hour"
+  elif (( diff < 1 * days )); then
+    human="about $(( (diff + hours / 2) / hours )) hours"
+  elif (( diff < 2 * days)); then
+    human="1 day"
+  else
+    human="$(( (diff + days / 2) / days)) days"
+  fi
+
+  echo "$human ago"
+}
+
+
+
+# star if current branch
+star='%(if)%(HEAD)%(then)*%(else).%(end)'
+# we delimit the date to sed it more easily later
+date='%(color: 8)%(committerdate:unix)'
+name='%(if)%(HEAD)%(then)%(color: bold green)%(else)%(color: white)%(end)%(refname:short)'
+
+# fmt="${star} ${date} ${name} %(color:64)%(contents:subject)"
+
+RED='\033[38;5;8m'
+#NC='\033[0m' # No Color
+
+GRAY='\x1b[38;5;8m'
+GREEN='\x1b[38;5;10m'
+NC='\x1B[0m'
+
+BOLD="\033[1;31m"
+FAINT="\033[2;31m"
+ITALIC="\033[3;31m"
+UNDERLINED="\033[4;31m"
+BLINK="\033[5;31m"
+NORMAL="\033[6;31m"
+INVERTED="\033[7;31m"
+
+TERM_WIDTH=`tput cols`
+
+
+fmt='
+  now=`date +%s`
+
+  # star if current branch
+  star=%(if)%(HEAD)%(then)*%(else) %(end)
+  date=%(color: 8)%(committerdate:unix)
+  name=%(refname:short)
+  commitmsg=%(color:64)%(contents:subject)
+  reldate=`time_ago $date $now`
+
+  # highlight selected branch name
+  if [[ $star == "*" ]]; then
+    name=$INVERTED$GREEN$name
+  fi
+
+  out="${star} $GRAY$reldate $GREEN$name$NC $commitmsg"
+
+  out_plain=`echo -e "$out"|perl -pe "s/\e\[[0-9;]*m(?:\e\[k)?//g"`
+  out_plain_length=`echo -e "$out_plain" | wc -c`
+  out_length=`echo -e "$out" | wc -c`
+
+  delta=`expr $out_length - $out_plain_length`
+  limit=`expr $COLUMNS + $delta`
+
+  #echo "${#out} $out_plain_length $delta $COLUMNS $limit\n"
+  echo -e "${out}" | cut -c -$limit
+  #echo -e "${out_plain}" | cut -c -$COLUMNS
+
+  #echo -e "$out" \
+   #| perl -pe "s/\e\[[0-9;]*m(?:\e\[k)?//g" \
+   #| cut -c -$COLUMNS
+
+'
+
+s=`git for-each-ref \
+  --sort='-committerdate' \
+  --shell --format="$fmt" \
+  refs/heads/`
+
+# Eval the script we generated
+COLUMNS=`tput cols` eval "$s"
+
+#| awk -F" " '{
+        #match($2, /([0-9]{4})([0-9]{2})([0-9]{2})/, a);
+     #   $2=sprintf("%d-%d-%d", a[1], a[2], a[3])
+     #}1'
+
+#     2021-04-29 miscCC miscCC
+
+

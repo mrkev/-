@@ -1,0 +1,3 @@
+#!/bin/bash
+
+tsc -p tsconfig-strict.json > dist/tscout.txt && cat dist/tscout.txt | grep "src/" | grep -o "TS[0-9]\+" | sort -n | uniq -c | sort -nr > dist/error_codes.txt

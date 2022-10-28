@@ -1,0 +1,7 @@
+#!/bin/bash
+
+
+REMOTE=`git remote show origin | grep "Fetch URL:" | sed -E 's/^.*Fetch URL: (.*)$/\1/'`
+BRANCHNAME=`git rev-parse --abbrev-ref HEAD`
+echo "Opening $REMOTE/tree/$BRANCHNAME"
+open "$REMOTE/tree/$BRANCHNAME"

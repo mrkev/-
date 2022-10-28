@@ -1,0 +1,32 @@
+#!/bin/bash
+
+# -v verifies before sending
+DO_VERIFY=false
+while getopts ":v" opt; do
+  case $opt in
+    v)
+      DO_VERIFY=true
+      ;;
+    \?)
+      echo "Invalid option: -$OPTARG" >&2
+      exit 1;
+      ;;
+  esac
+done
+
+# Ignore args parsed by getopts aready (shift by opt index)
+shift $(($OPTIND - 1))
+
+
+
+if git rebase --show-current-patch > /dev/null ; then
+  # We're rebasing
+  echo "Rebase in progress! Will --continue"
+  git rebase --continue && git push --force
+else
+  if [ "$DO_VERIFY" = true ] ; then
+    git commit --amend && git push --force
+  else
+    git commit --amend --no-verify && git push --force
+  fi
+fi

@@ -1,0 +1,3 @@
+#!/bin/bash
+
+BROWSER=none FAST_REFRESH=false yarn start

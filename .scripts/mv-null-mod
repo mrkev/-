@@ -1,0 +1,33 @@
+#!/bin/bash
+
+set -e
+
+# -d runs with the debugger, and doesn't run tsc, prettier after
+DEBUG=false
+while getopts ":d" opt; do
+  case $opt in
+    d)
+      DEBUG=true
+      ;;
+    \?)
+      echo "Invalid option: -$OPTARG" >&2
+      exit 1;
+      ;;
+  esac
+done
+
+# Ignore args parsed by getopts aready (shift by opt index)
+shift $(($OPTIND - 1))
+
+if [ "$DEBUG" = true ] ; then
+  cat dist/batch.txt | node --inspect-brk scripts/null-mod
+else
+  cat dist/batch.txt | node scripts/null-mod
+  tsc --noEmit;
+  # the 'cut' is there because git operates on the root while or project operates under /frontend, so we need to strip 'frontend/' from all paths we get from git diff
+  prettier --loglevel warn --write $(git diff --name-only src/ | cut -d'/' -f2- | xargs)
+
+
+fi
+
+
