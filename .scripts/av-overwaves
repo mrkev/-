@@ -1,0 +1,27 @@
+#! /bin/sh
+# Taken from: https://hhsprings.bitbucket.io/docs/programming/examples/ffmpeg/audio_visualization/acrossover_and_its_vis.html
+
+ifn="$1"
+ifnb="`basename \"${ifn}\" .mp3`"
+pref="`basename $0 .sh`"
+#
+ffmpeg -y -i "${ifn}" \
+-filter_complex "
+[0:a]asplit=2[a][as1];
+
+[as1]acrossover=split='125 500 2000 8000'[a01][a02][a03][a04][a05];
+
+[a01]showwaves=mode=point:split_channels=1:s=1920x1080[v01];
+[a02]showwaves=mode=point:split_channels=1:s=1920x1080[v02];
+[a03]showwaves=mode=point:split_channels=1:s=1920x1080[v03];
+[a04]showwaves=mode=point:split_channels=1:s=1920x1080[v04];
+[a05]showwaves=mode=point:split_channels=1:s=1920x1080[v05];
+
+color=black:size=1920x1080,loop=-1,setsar=1[bg];
+
+[bg][v01]overlay=shortest=1[v1];
+[v1][v02]overlay[v2];
+[v2][v03]overlay[v3];
+[v3][v04]overlay[v4];
+[v4][v05]overlay[v]
+" -map '[v]' -map '[a]' "${pref}_${ifnb}.overwaves.mp4"

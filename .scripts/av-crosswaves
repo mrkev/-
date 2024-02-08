@@ -1,0 +1,20 @@
+#! /bin/sh
+# Taken from: https://hhsprings.bitbucket.io/docs/programming/examples/ffmpeg/audio_visualization/acrossover_and_its_vis.html
+# More at: https://hhsprings.bitbucket.io/docs/programming/examples/ffmpeg/audio_visualization/index.html
+ifn="$1"
+ifnb="`basename \"${ifn}\" .mp3`"
+pref="`basename $0 .sh`"
+#
+ffmpeg -y -i "${ifn}" \
+-filter_complex "
+[0:a]asplit=2[a][as1];
+
+[as1]acrossover=split='125 500 2000 8000'[a01][a02][a03][a04][a05];
+
+[a01]showwaves=split_channels=1:s=1920x216[v01];
+[a02]showwaves=split_channels=1:s=1920x216[v02];
+[a03]showwaves=split_channels=1:s=1920x216[v03];
+[a04]showwaves=split_channels=1:s=1920x216[v04];
+[a05]showwaves=split_channels=1:s=1920x216[v05];
+[v01][v02][v03][v04][v05]vstack=5[v]
+" -map '[v]' -map '[a]' "${pref}_${ifnb}.crosswaves..mp4"

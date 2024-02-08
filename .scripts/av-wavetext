@@ -1,0 +1,17 @@
+#!/bin/bash
+# This and other similar scripts taken from:
+# https://lukaprincic.si/development-log/ffmpeg-audio-visualization-tricks
+ffmpeg -i "$1" -filter_complex "
+ [0:a]showwaves=mode=cline:s=600x90:colors=White@0.5|White@0.5:scale=cbrt:rate=60[v];
+ [v]drawtext=text='$1':fontcolor=White@0.5:
+ fontsize=30:font=monospace:x=(w-text_w)/5:y=(h-text_h)/5[out]" \
+ -map "[out]" -map 0:a -pix_fmt yuv420p \
+ -b:a 360k -r:a 44100 "$1.wavetext.mp4"
+
+
+
+# ffmpeg -i "$1" -filter_complex "[0:a]showwaves=mode=cline:s=hd480:colors=Yellow@0.5|Blue@0.5:scale=sqrt[v];
+# [v]drawtext=text='$1':fontcolor=White@0.5:
+# fontsize=30:font=monospace:x=(w-text_w)/5:y=(h-text_h)/5[out]" \
+# -map "[out]" -map 0:a -pix_fmt yuv420p \
+#  -b:a 360k -r:a 44100 "$1.wavetext.mp4"

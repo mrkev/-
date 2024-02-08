@@ -1,0 +1,20 @@
+#!/bin/bash
+
+count=$(git rev-list --count main..)
+echo $count;
+
+if (($count > 1)); then
+  echo "More than one commit in this branch"
+  exit 1
+else
+  echo "One commit."
+fi
+
+commit=$(git rev-list main..)
+branchname=$(git rev-parse --abbrev-ref HEAD)
+
+git checkout main
+git cherry-pick $commit
+
+# git cherry-pick
+# git merge-base main $1 | cat

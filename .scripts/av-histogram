@@ -1,0 +1,2 @@
+#!/bin/bash
+ffmpeg -i "$1" -filter_complex "[0:a]ahistogram=s=hd480:slide=scroll:scale=log,format=yuv420p[v]" -map "[v]" -map 0:a -b:a 360k "$1.histogram.mp4"

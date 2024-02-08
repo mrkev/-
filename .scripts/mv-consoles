@@ -1,0 +1,8 @@
+#!/bin/bash
+# https://stackoverflow.com/questions/68831986/find-todos-with-file-names-and-line-numbers-in-git-diff
+git diff HEAD^ | awk '
+  /^diff / {f="?"; next}
+  f=="?" {if (/^\+\+\+ /) f=$0"\n"; next}
+  /^@@/ {n=$3; sub(/,.*/,"",n); n=0+$3; next}
+  /^\+.*console\.log/ {print f n ":" substr($0,2); f=""}
+  substr($0,1,1)~/[ +]/ {n++}'

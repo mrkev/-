@@ -1,0 +1,26 @@
+#!/bin/sh
+# https://hhsprings.bitbucket.io/docs/programming/examples/ffmpeg/audio_visualization/acrossover_and_its_vis.html
+ifn="$1"
+ifnb="`basename \"${ifn}\" .mp3`"
+pref="`basename $0 .sh`"
+#
+ffmpeg -y -i "${ifn}" \
+-filter_complex "
+[0:a]asplit=2[a][as1];
+
+[as1]acrossover=split='125 500 2000 8000'[a01][a02][a03][a04][a05];
+
+[a01]showwaves=mode=line:split_channels=1:s=1920x1080:colors=0x3030FF@0.8[v01];
+[a02]showwaves=mode=line:split_channels=1:s=1920x1080:colors=0x5050FF@0.8[v02];
+[a03]showwaves=mode=line:split_channels=1:s=1920x1080:colors=0x7070FF@0.8[v03];
+[a04]showwaves=mode=line:split_channels=1:s=1920x1080:colors=0x9090FF@0.8[v04];
+[a05]showwaves=mode=line:split_channels=1:s=1920x1080:colors=0xB0B0FF@0.8[v05];
+
+color=black:size=1920x1080,loop=-1,setsar=1[bg];
+
+[bg][v01]overlay=shortest=1[v1];
+[v1][v02]overlay[v2];
+[v2][v03]overlay[v3];
+[v3][v04]overlay[v4];
+[v4][v05]overlay[v]
+" -map '[v]' -map '[a]' "${pref}_${ifnb}.mp4"

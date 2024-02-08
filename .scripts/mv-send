@@ -1,6 +1,29 @@
 #!/bin/bash
 set -e
-git checkout dev
+
+# -b keeps you in the branch
+CHECK_DEV=true
+while getopts ":b" opt; do
+  case $opt in
+    b)
+      CHECK_DEV=false
+      ;;
+    \?)
+      echo "Invalid option: -$OPTARG" >&2
+      exit 1;
+      ;;
+  esac
+done
+
+
+# Ignore args parsed by getopts aready (shift by opt index)
+shift $(($OPTIND - 1))
+
+if [ "$CHECK_DEV" = true ] ; then
+  echo "checking out dev..."
+  git checkout main #TRUNK IS MAIN
+fi
+
 git checkout -b $1
 git commit -m "$2"
 git push --set-upstream origin $1 | tee /dev/stdout | grep "remote:.*https:" | sed 's/remote: *//'

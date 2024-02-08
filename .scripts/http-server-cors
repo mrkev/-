@@ -1,0 +1,3 @@
+#!/bin/bash
+ws --cors.origin http://localhost/ --cors.embedder-policy require-corp --cors.opener-policy same-origin
+
