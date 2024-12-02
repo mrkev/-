@@ -2,81 +2,165 @@
 set nocompatible
 filetype off
 
-"" Vundle
-" set the runtime path to include Vundle and initialize
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
-Plugin 'VundleVim/Vundle.vim'
-Plugin 'christoomey/vim-tmux-navigator'
-Plugin 'vim-airline/vim-airline'
-Plugin 'vim-airline/vim-airline-themes'
-Plugin 'keith/tmux.vim' " Syntax highlighting for .tmux.conf
-Plugin 'ctrlpvim/ctrlp.vim'
-Plugin 'easymotion/vim-easymotion'
-Plugin 'airblade/vim-gitgutter'
-Plugin 'terryma/vim-multiple-cursors'
-Plugin 'isRuslan/vim-es6'
-Plugin 'vim-syntastic/syntastic'
-" Plugin 'scrooloose/nerdtree'
-Plugin 'tpope/vim-surround' " dopee
-Plugin 'leafgarland/typescript-vim' " typescript syntax
-Plugin 'quramy/tsuquyomi' " typescript extra features
-call vundle#end()
+" From: https://github.com/neoclide/coc.nvim?tab=readme-ov-file#example-vim-configuration
+" May need for Vim (not Neovim) since coc.nvim calculates byte offset by count
+" utf-8 byte sequence
+set encoding=utf-8
+" Some servers have issues with backup files, see #649 (in coc.nvim)
+set nobackup
+set nowritebackup
 
-"" VimPlug (for some plugins that need compiling)
-" Autoinstall if not present
-if empty(glob('~/.vim/autoload/plug.vim'))
-  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
-    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+" Having longer updatetime (default is 4000 ms = 4 s) leads to noticeable
+" delays and poor user experience.
+set updatetime=300
+
+" Always show the signcolumn, otherwise it would shift the text each time
+" diagnostics appear/become resolved.
+if has("nvim-0.5.0") || has("patch-8.1.1564")
+  " Recently vim can merge signcolumn and number column into one
+  set signcolumn=number
+else
+  set signcolumn=yes
 endif
-" Specify a directory for plugins (for Neovim: ~/.local/share/nvim/plugged)
+
+" "" Vundle
+" " set the runtime path to include Vundle and initialize
+" set rtp+=~/.vim/bundle/Vundle.vim
+" " set rtp+=~/.config/nvim/bundle/Vundle.vim
+" call vundle#begin()
+" Plugin 'VundleVim/Vundle.vim'
+" " Plugin 'christoomey/vim-tmux-navigator'
+" " Plugin 'vim-airline/vim-airline'
+" " Plugin 'vim-airline/vim-airline-themes'
+" " Plugin 'keith/tmux.vim' " Syntax highlighting for .tmux.conf
+" " Plugin 'easymotion/vim-easymotion'
+" " Plugin 'airblade/vim-gitgutter'
+" " Plugin 'terryma/vim-multiple-cursors'
+" " Plugin 'isRuslan/vim-es6'
+" Plugin 'leafgarland/typescript-vim' " Syntax highlighting for typescript
+" " Plugin 'quramy/tsuquyomi' " typescript extra features
+" " " Plugin 'scrooloose/nerdtree'
+" " Plugin 'tpope/vim-surround' " dopee
+" " Plugin 'leafgarland/typescript-vim' " typescript syntax
+" call vundle#end()
+
+" VimPlug (new)
+" Apparently Vundle hasn't been mantained and VimPlug is the way to go now
+" I should delete vundle: rm -rf ~/.vim/bundle
 call plug#begin('~/.vim/plugged')
-" Make sure you use single quotes
-Plug 'Shougo/vimproc.vim', {'do' : 'make'}
-Plug 'nightsense/vim-crunchbang'
-" Plug 'tpope/vim-abolish'
+  Plug 'flazz/vim-colorschemes'
+  Plug 'ctrlpvim/ctrlp.vim'
+  Plug 'airblade/vim-gitgutter'
+  " Plug 'dense-analysis/ale'
+  " Provided through coc now
+  " Plug 'leafgarland/typescript-vim' " Syntax highlighting for typescript
+
+  " Language-server features
+  " Note: can install more language servers here: https://github.com/neoclide/coc.nvim/wiki/Language-servers
+  Plug 'neoclide/coc.nvim', {'branch': 'release'}
 call plug#end()
 
+" Give more space for displaying messages.
+set cmdheight=2
 
-filetype on
+" Don't pass messages to |ins-completion-menu|.
+set shortmess+=c
+
+" Use tab for trigger completion with characters ahead and navigate.
+" NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
+" other plugin before putting this into your config.
+" inoremap <silent><expr> <TAB>
+"       \ pumvisible() ? "\<C-n>" :
+"       \ <SID>check_back_space() ? "\<TAB>" :
+"       \ coc#refresh()
+" inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
+" Use K to show documentation in preview window.
+nnoremap <silent> K :call <SID>show_documentation()<CR>
+
+
+" Symbol renaming.
+nmap <leader>rn <Plug>(coc-rename)
+map <F2> <Plug>(coc-rename)
+
+" Add (Neo)Vim's native statusline support.
+" NOTE: Please see `:h coc-status` for integrations with external plugins that
+" provide custom statusline: lightline.vim, vim-airline.
+set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
+
+
+
+" "" VimPlug (for some plugins that need compiling)
+" " Autoinstall if not present
+" if empty(glob('~/.vim/autoload/plug.vim'))
+"   silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+"     \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+"   autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+" endif
+" " Specify a directory for plugins (for Neovim: ~/.local/share/nvim/plugged)
+" call plug#begin('~/.vim/plugged')
+" " Make sure you use single quotes
+" Plug 'Shougo/vimproc.vim', {'do' : 'make'}
+" Plug 'nightsense/vim-crunchbang'
+" " Plug 'tpope/vim-abolish'
+" call plug#end()
+
+filetype plugin indent on
 
 " http://www.johnhawthorn.com/2012/09/vi-escape-delays/
-set timeoutlen=1000 ttimeoutlen=0 " reduces the annoying timeout from pressing esc
+" seems to be inserting a "g" at the beggining of the file for some reason
+" set timeoutlen=1000 ttimeoutlen=0 " reduces the annoying timeout from pressing esc
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Plugin Config
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-""
-" let NERDTreeQuitOnOpen=1
+" From Plugin 'flazz/vim-colorschemes'
+colorscheme molokai
 
-:command! Explore NERDTree
-"" Airline
-" so airline powerline symbols work
-let g:airline_powerline_fonts=1
-let g:airline_theme='base16'
+" From Plugin 'ctrlpvim/ctrlp.vim'
+let g:ctrlp_custom_ignore = 'node_modules\|DS_Store'
 
-"" CtrlP
-let g:ctrlp_map = '<c-p>'
-let g:ctrlp_cmd = 'CtrlP'
-let g:ctrlp_working_path_mode = 'ra'
-set wildignore+=*/tmp/*,*.so,*.swp,*.zip,node_modules
-let g:ctrlp_custom_ignore = {
-  \ 'dir':  '.(git|hg|svn)$|_build$',
-  \ }
-let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files -co --exclude-standard']
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
 
-"" Easymotion
-" easymotion setup
-let g:Easymotion_smartcase = 1
-map / <Plug>(easymotion-sn)
-omap / <Plug>(easymotion-tn)
-" These `n` & `N` mappings are options. You do not have to map `n` & `N` to EasyMotion.
-" Without these mappings, `n` & `N` works fine. (These mappings just provide
-" different highlight method and have some other features )
-map  n <Plug>(easymotion-next)
-map  N <Plug>(easymotion-prev)
+
+" ""
+" " let NERDTreeQuitOnOpen=1
+
+" " :command! Explore NERDTree
+" "" Airline
+" " so airline powerline symbols work
+" let g:airline_powerline_fonts=1
+" let g:airline_theme='base16'
+
+" "" CtrlP
+" let g:ctrlp_map = '<c-p>'
+" let g:ctrlp_cmd = 'CtrlP'
+" let g:ctrlp_working_path_mode = 'ra'
+" set wildignore+=*/tmp/*,*.so,*.swp,*.zip,node_modules
+" let g:ctrlp_custom_ignore = {
+"   \ 'dir':  '.(git|hg|svn)$|_build$',
+"   \ }
+" let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files -co --exclude-standard']
+
+" "" Easymotion
+" " easymotion setup
+" let g:Easymotion_smartcase = 1
+" map / <Plug>(easymotion-sn)
+" omap / <Plug>(easymotion-tn)
+" " These `n` & `N` mappings are options. You do not have to map `n` & `N` to EasyMotion.
+" " Without these mappings, `n` & `N` works fine. (These mappings just provide
+" " different highlight method and have some other features )
+" map  n <Plug>(easymotion-next)
+" map  N <Plug>(easymotion-prev)
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => General
@@ -128,10 +212,11 @@ set nobackup
 set nowb
 set noswapfile
 
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " UI BRUH
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-colorscheme molokai
+
 "colorscheme molokai " Install at https://github.com/tomasr/molokai
 "let g:molokai_original = 1        " match the original monokai background color
 set background=dark               " Let vim know we are on a dark terminal
@@ -173,22 +258,22 @@ set grepprg=grep\ -nH\ $*         " Needed for Syntax Highlighting
 " => netrw
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-let g:netrw_browse_split = 1      " Open files in new vertical split
-let g:netrw_liststyle = 3         " Show list of files as tree
-" Hit enter in the file browser to open the selected
-" file with :vsplit to the right of the browser.
-let g:netrw_browse_split = 4
-let g:netrw_winsize = 25					" Smaller: not half the screen like a split
+" let g:netrw_browse_split = 1      " Open files in new vertical split
+" let g:netrw_liststyle = 3         " Show list of files as tree
+" " Hit enter in the file browser to open the selected
+" " file with :vsplit to the right of the browser.
+" let g:netrw_browse_split = 4
+" let g:netrw_winsize = 25					" Smaller: not half the screen like a split
 
-" Lifted off from http://blog.g14n.info/2013/07/my-vim-configuration.html
-" when navigating a folder, hitting <v> opens a window at right side (default
-" is left side)
-let g:netrw_altv = 1
+" " Lifted off from http://blog.g14n.info/2013/07/my-vim-configuration.html
+" " when navigating a folder, hitting <v> opens a window at right side (default
+" " is left side)
+" let g:netrw_altv = 1
 
-augroup ProjectDrawer
-	autocmd!
-	autocmd VimEnter * :Vexplore
-augroup END
+" augroup ProjectDrawer
+" 	autocmd!
+" 	autocmd VimEnter * :Vexplore
+" augroup END
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Hooks
@@ -264,42 +349,42 @@ endif
 " Thanks to http://amix.dk/vim/vimrc.html and the web in general "
 " http://dougblack.io/words/a-good-vimrc.html
 
-""""" fzf
-set rtp+=/usr/local/opt/fzf
-" ## added by OPAM user-setup for vim / base ## 93ee63e278bdfc07d1139a748ed3fff2 ## you can edit, but keep this line
-let s:opam_share_dir = system("opam config var share")
-let s:opam_share_dir = substitute(s:opam_share_dir, '[\r\n]*$', '', '')
+" """"" fzf
+" set rtp+=/usr/local/opt/fzf
+" " ## added by OPAM user-setup for vim / base ## 93ee63e278bdfc07d1139a748ed3fff2 ## you can edit, but keep this line
+" let s:opam_share_dir = system("opam config var share")
+" let s:opam_share_dir = substitute(s:opam_share_dir, '[\r\n]*$', '', '')
 
-let s:opam_configuration = {}
+" let s:opam_configuration = {}
 
-function! OpamConfOcpIndent()
-  execute "set rtp^=" . s:opam_share_dir . "/ocp-indent/vim"
-endfunction
-let s:opam_configuration['ocp-indent'] = function('OpamConfOcpIndent')
+" function! OpamConfOcpIndent()
+"   execute "set rtp^=" . s:opam_share_dir . "/ocp-indent/vim"
+" endfunction
+" let s:opam_configuration['ocp-indent'] = function('OpamConfOcpIndent')
 
-function! OpamConfOcpIndex()
-  execute "set rtp+=" . s:opam_share_dir . "/ocp-index/vim"
-endfunction
-let s:opam_configuration['ocp-index'] = function('OpamConfOcpIndex')
+" function! OpamConfOcpIndex()
+"   execute "set rtp+=" . s:opam_share_dir . "/ocp-index/vim"
+" endfunction
+" let s:opam_configuration['ocp-index'] = function('OpamConfOcpIndex')
 
-function! OpamConfMerlin()
-  let l:dir = s:opam_share_dir . "/merlin/vim"
-  execute "set rtp+=" . l:dir
-endfunction
-let s:opam_configuration['merlin'] = function('OpamConfMerlin')
+" function! OpamConfMerlin()
+"   let l:dir = s:opam_share_dir . "/merlin/vim"
+"   execute "set rtp+=" . l:dir
+" endfunction
+" let s:opam_configuration['merlin'] = function('OpamConfMerlin')
 
-let s:opam_packages = ["ocp-indent", "ocp-index", "merlin"]
-let s:opam_check_cmdline = ["opam list --installed --short --safe --color=never"] + s:opam_packages
-let s:opam_available_tools = split(system(join(s:opam_check_cmdline)))
-for tool in s:opam_packages
-  " Respect package order (merlin should be after ocp-index)
-  if count(s:opam_available_tools, tool) > 0
-    call s:opam_configuration[tool]()
-  endif
-endfor
-" ## end of OPAM user-setup addition for vim / base ## keep this line
-" ## added by OPAM user-setup for vim / ocp-indent ## c2e92acc119ec23ec0ef0d921f77cbd3 ## you can edit, but keep this line
-if count(s:opam_available_tools,"ocp-indent") == 0
-  source "/Users/Kevin/.opam/4.05.0/share/vim/syntax/ocp-indent.vim"
-endif
-" ## end of OPAM user-setup addition for vim / ocp-indent ## keep this line
+" let s:opam_packages = ["ocp-indent", "ocp-index", "merlin"]
+" let s:opam_check_cmdline = ["opam list --installed --short --safe --color=never"] + s:opam_packages
+" let s:opam_available_tools = split(system(join(s:opam_check_cmdline)))
+" for tool in s:opam_packages
+"   " Respect package order (merlin should be after ocp-index)
+"   if count(s:opam_available_tools, tool) > 0
+"     call s:opam_configuration[tool]()
+"   endif
+" endfor
+" " ## end of OPAM user-setup addition for vim / base ## keep this line
+" " ## added by OPAM user-setup for vim / ocp-indent ## c2e92acc119ec23ec0ef0d921f77cbd3 ## you can edit, but keep this line
+" if count(s:opam_available_tools,"ocp-indent") == 0
+"   source "/Users/Kevin/.opam/4.05.0/share/vim/syntax/ocp-indent.vim"
+" endif
+" " ## end of OPAM user-setup addition for vim / ocp-indent ## keep this line
