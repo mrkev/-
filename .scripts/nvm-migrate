@@ -1,0 +1,12 @@
+#!/bin/zsh
+
+nvm use default
+VARIABLE=$(node --version)
+echo "default is ${VARIABLE}, migrating to $1"
+
+
+nvm install $1 --reinstall-packages-from=${VARIABLE}
+nvm alias default $1
+
+nvm uninstall ${VARIABLE}
+

@@ -1,7 +1,8 @@
-#!/bin/bash
+#!/bin/zsh
 
 # The moo scripting utility.
 # By: Kevin Chavez (@aykev)
+# Licence: MIT
 
 # moo myScript creates or edits a script.
 
@@ -16,8 +17,8 @@
 
 SCRIPTS_DIR=~/.scripts/
 THIS_SCRIPT="$0"
-DEFAULT_SCRIPT="#!/bin/bash\n\n"
-PROFILE_PATH=~/.bash_profile
+DEFAULT_SCRIPT="#!/bin/zsh\n\n"
+PROFILE_PATH=~/.zshenv
 
 function print_usage {
   echo ""
@@ -49,7 +50,7 @@ fi
 # assume not installed
 if [ ! -f "$SCRIPTS_DIR/moo" ]; then
 
-  # Ensure .bash_profile
+  # Ensure .zshenv
   if [ ! -f "$PROFILE_PATH" ]; then
     touch $PROFILE_PATH
   fi

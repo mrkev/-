@@ -1,0 +1,5 @@
+#!/bin/zsh
+gh repo create $1 --public --template mrkev/new-react-ts-lib
+sleep 5 # so github has time to create the repo
+git clone https://github.com/mrkev/$1
+
