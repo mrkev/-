@@ -9,13 +9,13 @@
 # Usage:
 #  moo myScript           add/edit script
 #  moo --delete myScript  remove script
+#  moo --move a b         rename script a to b
 #  moo --help
 #  moo -d --dir           print scripts dir
 #  moo -l --list          list scripts
 
-## TODO: moo mv a b
 
-SCRIPTS_DIR=~/.scripts/
+SCRIPTS_DIR=~/.scripts
 THIS_SCRIPT="$0"
 DEFAULT_SCRIPT="#!/bin/zsh\n\n"
 PROFILE_PATH=~/.zshenv
@@ -25,6 +25,7 @@ function print_usage {
   echo "Usage:"
   echo " moo myScript           add/edit script"
   echo " moo --delete myScript  remove script"
+  echo " moo --move old new     rename script"
   echo " moo --help"
   echo " moo -d --dir           print scripts dir"
   echo " moo -l --list          list scripts"
@@ -115,7 +116,7 @@ if [ $# -eq 1 ]; then
       exit 0;
     fi
     # Confirm with the user
-    read -p "Can't be undone. Continue (y/N)? " CHOICE
+    read "CHOICE?Can't be undone. Continue (y/N)? "
     case "$CHOICE" in
       y|Y )
         rm "$SCRIPT"
@@ -129,24 +130,8 @@ if [ $# -eq 1 ]; then
   fi
 
   if [ "$DO_MOVE" = 1 ]; then
-    echo "Move: not implemented."
-    exit 0;
-  #  if [ ! -f "$SCRIPT" ]; then
-  #    echo "No such script: $SCRIPT"
-  #    exit 0;
-  #  fi
-  #  # Confirm with the user
-  #  read -p "Can't be undone. Continue (y/N)? " CHOICE
-  #  case "$CHOICE" in
-  #    y|Y )
-  #      rm "$SCRIPT"
-  #      echo "Deleted $SCRIPT."
-  #    ;;
-  #    * )
-  #      echo "Selected no."
-  #    ;;
-  #  esac
-  #  exit 0;
+    echo "Move requires two arguments: moo mv oldName newName"
+    exit 1;
   fi
 
 
@@ -171,6 +156,26 @@ if [ $# -eq 1 ]; then
   fi
 
   echo "$1 is ready to use."
+  exit 0
+fi
+
+# $ moo mv oldName newName
+if [ $# -eq 2 ] && [ "$DO_MOVE" = 1 ]; then
+  SRC="$SCRIPTS_DIR/$1"
+  DST="$SCRIPTS_DIR/$2"
+
+  if [ ! -f "$SRC" ]; then
+    echo "No such script: $SRC"
+    exit 1;
+  fi
+
+  if [ -f "$DST" ]; then
+    echo "Script already exists: $DST"
+    exit 1;
+  fi
+
+  mv "$SRC" "$DST"
+  echo "Renamed $1 to $2."
   exit 0
 fi
 
